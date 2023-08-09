@@ -1,2 +1,2 @@
 # Simple-Image-Editor
-Link to explore website: https://kimicexy.github.io/KimIcexy/
+Link to explore website: https://leanh2105.github.io/Edit-Image-Simple/
