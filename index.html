@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CHỈNH SỬA ẢNH</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/undo.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/redo.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/software-download.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/sync.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/software-upload.css' rel='stylesheet'>
+    <script src="https://unpkg.com/ionicons@latest/dist/ionicons/ionicons.js"></script>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/swap.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/erase.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/format-text.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/pen.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/edit-flip-h.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/play-backwards.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/crop.css' rel='stylesheet'>
+    <link href='https://unpkg.com/css.gg@2.0.0/icons/css/corner-double-up-left.css' rel='stylesheet'>
+
+
+</head>
+
+<body>
+    <h1>CHỈNH SỬA ẢNH</h1>
+    <div class="control" style="left: 16vw;">
+        <label for="uploadBtn" id="customUploadBtn" class="customBtn-control customBtn-control-upload">
+            <i class="gg-software-upload"></i>
+            <span class="tooltip" id="tooltip">Tải ảnh lên</span>
+        </label>
+
+        <input type="file" id="uploadBtn" accept="image/*" style="display:none;">
+        <button id="resetBtn" class="customBtn-control-reset">
+            <i class="gg-corner-double-up-left"></i>
+            <span class="tooltip" id="resetTooltip">Khôi phục gốc</span>
+        </button>
+
+        <button id="downloadBtn" class="customBtn-control customBtn-control-upload">
+            <i class="gg-software-download"></i>
+            <span class="tooltip" id="downloadTooltip">Tải về</span>
+        </button>
+
+    </div>
+    <div class="control" style="right: 25vw;">
+        <button id="undoBtn" class="customBtn-control" style="margin-left: 10vw;">
+            <i class="gg-undo"></i>
+            <span class="tooltip" id="undoTooltip">Hoàn tác</span>
+        </button>
+
+        <button id="redoBtn" class="customBtn-control">
+            <i class="gg-redo"></i>
+            <span class="tooltip" id="redoTooltip">Làm lại</span>
+        </button>
+
+
+    </div>
+
+    <div id="dropArea">
+        <div id="drop-text">KÉO THẢ ẢNH VÀO ĐÂY</div>
+        <div class="text">HOẶC NHẤN
+            <div id="drop-btn">
+                <label for="uploadBtn"><i class="gg-software-upload"></i></label>
+                <input type="file" id="uploadBtn" accept="image/*" style="display:none;">
+            </div>
+        </div>
+    </div>
+    <canvas id="canvas"></canvas>
+    <div class="sidebar" style="left: 0;">
+        <div class="function-group">
+            <div class="group-title">Điều chỉnh</div>
+            <div class="group" id="adjustGroup">
+                <div class="function-wrapper">
+                    <div>
+                        <label for="blurSlider" class="text">Làm trơn: </label>
+                        <input type="range" id="blurSlider" min="0" max="10" step="1" value="0">
+                    </div>
+
+                    <div>
+                        <label for="lightSlider" class="text">Chiếu sáng: </label>
+                        <input type="range" id="lightSlider" min="-50" max="50" step="1" value="0">
+                    </div>
+                    <div>
+                        <label for="contrastSlider" class="text">Tương phản:</label>
+                        <input type="range" id="contrastSlider" min="0.01" max="2.01" step="0.01" value="1">
+                    </div>
+
+                    <br>
+                    <div class="btn-group">
+                        <button id="cropBtn" class="function-btn">
+                            <i class="gg-crop"></i>
+                            <span class="tooltip" id="cropTooltip">Cắt</span>
+                        </button><br>
+
+                        <button id="rotateBtn" class="function-btn">
+                            <i class="gg-sync"></i>
+                            <span class="tooltip" id="rotateTooltip">Xoay</span>
+                        </button><br>
+
+                        <button id="flipBtn" class="function-btn" style="margin-bottom: 5px;">
+                            <i class="gg-edit-flip-h"></i>
+                            <span class="tooltip" id="flipTooltip">Lật</span>
+                        </button>
+
+                    </div>
+                    <br>
+
+                    <button class="function-btn function-btn-save" style="margin-top: 7px;" onclick="saveAdjustments()">
+                        <ion-icon name="save-outline"></ion-icon>
+                        <span class="tooltip" id="saveTooltip">Lưu</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="function-group">
+            <div class="group-title">Bộ lọc</div>
+            <div class="group" id="filterGroup">
+                <div class="function-wrapper">
+                    <button id="grayBtn" class="function-btn text" style="margin-bottom: 15px; width: 7vw;">Làm xám</button>
+                    <button id="edgeBtn" class="function-btn text" style="margin-bottom: 10px; width: 7vw;">Biên cạnh</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar" style="right: 0;">
+        <div class="function-group">
+            <div class="group-title">Viết chữ</div>
+            <div class="group" id="textGroup">
+                <div class="function-wrapper">
+                    <div>
+                        <label for="text" class="text">Văn bản:</label>
+                        <input type="text" id="text" placeholder="Nhập văn bản">
+                    </div>
+                    <div>
+                        <label for="textColor" class="text">Màu sắc:</label>
+                        <input type="color" id="textColor" value="#FFFFFF">
+                    </div>
+                    <div>
+                        <label for="fontSize" class="text">Kích thước:</label>
+                        <input type="number" id="fontSize" min="1" max="100" step="1" value="20" onchange="updateTextScale()">
+                    </div>
+                    <div class="btn-group">
+                        <button style="margin-top: 15px; margin-bottom: 15px;" class="function-btn function-btn-text" onclick="handleText()">
+                            <i class="gg-pen"></i>
+                            <span class="tooltip" id="writeTextTooltip">Viết chữ</span>
+                        </button>
+
+                        <button style="margin-top: 15px; margin-bottom: 15px;" class="function-btn" onclick="deleteText()">
+                            <i class="gg-erase"></i>
+                            <span class="tooltip" id="deleteTooltip">Xóa</span>
+                        </button>
+
+                    </div>
+                    <button class="function-btn function-btn-save" style="margin-top: 7px;" onclick="saveText()">
+                        <ion-icon name="save-outline"></ion-icon>
+                        <span class="tooltip" id="saveTooltip">Lưu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="function-group">
+            <div class="group-title">Vẽ</div>
+            <div class="group" id="drawGroup">
+                <div class="function-wrapper">
+                    <div>
+                        <label for="drawColor" class="text">Màu sắc:</label>
+                        <input type="color" id="drawColor" value="#FFFFFF">
+                    </div>
+
+                    <div>
+                        <label for="thickSelect" class="text">Kích thước: </label>
+                        <select id="thickSelect">
+                            <option value="1">1</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                        </select>
+                    </div>
+
+                    <div class="btn-group">
+                        <button id="drawBtn" class="function-btn function-btn-draw" style="margin-top: 15px; margin-bottom: 15px;">
+                            <ion-icon name="brush-outline"></ion-icon>
+                            <span id="drawTooltip">Vẽ</span>
+                        </button>
+
+                        <button id="eraseBtn" class="function-btn" style="margin-top: 15px; margin-bottom: 15px;">
+                            <i class="gg-erase"></i>
+                            <span class="tooltip" id="deleteTooltip">Xóa</span>
+                        </button>
+
+                    </div>
+
+                    <button class="function-btn function-btn-save" onclick="saveDrawing()">
+                        <ion-icon name="save-outline"></ion-icon>
+                        <span class="tooltip" id="saveTooltip">Lưu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>
+
+<script src="script.js"></script>
